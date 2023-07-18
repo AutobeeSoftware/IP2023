@@ -1,11 +1,14 @@
 import cv2
 import numpy as np
+import sys
+sys.path.append(r"../IP2023")
+
 from utils2 import gstreamer_pipeline
 
 import threading
 import numpy as np
 
-import CSI_Camera
+from CSI_Camera import CSI_Camera
 
 
 #frameL = cv2.VideoCapture(gstreamer_pipeline(0),cv2.CAP_GSTREAMER)

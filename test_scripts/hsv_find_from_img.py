@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 #from scipy import ndimage
 import matplotlib.pyplot as plt
+import sys
+sys.path.append(r"../IP2023")
+
 from utils2 import gstreamer_pipeline
 
 

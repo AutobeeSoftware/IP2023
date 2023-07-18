@@ -1,10 +1,14 @@
 import cv2
 import numpy as np
-import CSI_camera
+
+import sys
+sys.path.append(r"../IP2023")
+
+from CSI_Camera import CSI_camera
 
 
 camera = CSI_camera()
-camera.open(CSI)
+camera.open()
 camera.start()
 
 _,img = camera.read()

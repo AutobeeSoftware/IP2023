@@ -55,6 +55,7 @@ class CSI_Camera:
             )
             # Grab the first frame to start the video capturing
             self.grabbed, self.frame = self.video_capture.read()
+            print("calisti")
 
         except RuntimeError:
             self.video_capture = None
