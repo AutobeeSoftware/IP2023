@@ -102,7 +102,7 @@ while True:  # sürekli kamerayı okutur
 
 
 
+camera.stop()
+camera.release()
 
-    
-cap.release()
 cv2.destroyAllWindows()

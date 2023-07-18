@@ -3,7 +3,7 @@ import numpy as np
 import sys
 sys.path.append(r"../IP2023")
 
-from utils2 import gstreamer_pipeline
+from utils2 import gstreamer_pipeline, camCombine
 
 import threading
 import numpy as np
@@ -68,5 +68,10 @@ while True:
         print("overlap: " + str(overlap))
 
 
+frameL.stop()
+frameR.stop()
+
+frameL.release()
+frameR.release()
 
 cv2.destroyAllWindows()

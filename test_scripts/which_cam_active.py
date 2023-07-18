@@ -32,4 +32,9 @@ while True:
     cv2.imshow("cam2", frame2)
     cv2.waitKey(30)
 
+cam1.stop()
+cam2.stop()
+
+cam1.release()
+cam2.release()
 cv2.destroyAllWindows()
