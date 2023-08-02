@@ -213,3 +213,26 @@ def camera2lidar(width, fov,detections):
         return output
     else:
         return None
+
+
+def lidar2cam(img, fov,lidar,treshold):
+    if lidar is None:
+        return None 
+
+    shift = int((len(lidar)-fov)/2)
+    lidar = np.array(lidar)
+    camera_fov = lidar[shift:len(lidar)-shift]
+
+    output_image = np.copy(img)
+    mask = np.array(camera_fov<treshold)
+    
+    width = img.shape[1]
+    for col in range(width):
+        new_idx = int(fov * col / width)
+        #print(mask.shape, new_idx)
+        if not mask[new_idx]:
+            output_image[:, col] = [0, 0, 0]
+
+    return output_image
+
+
