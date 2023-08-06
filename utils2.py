@@ -251,32 +251,27 @@ def mask_with_lidar(img, cam_fov,circles):
         print(d)
         r = 0.15
 
-        center_angle = math.atan2(y,x) * math.pi
-        radius_angle = abs(math.atan2(r,d)) * math.pi
+        center_angle = math.degrees(math.atan2(y,x))
+        radius_angle = math.degrees(abs(math.atan2(r,d)))
         
         fov_start = min(center_angle-radius_angle, center_angle+radius_angle)
         fov_end = max(center_angle-radius_angle, center_angle+radius_angle)
         print(fov_start,fov_end)
 
-        if y-r < 0 :
-            fov_start *= -1
-        if y+r < 0 :
-            fov_end *= -1
-
-        fov_start += cam_fov
-        fov_end += cam_fov
 
 
-
-        if fov_end < 0 or fov_start > cam_fov:
+        if fov_end < -cam_fov/2 or fov_start > cam_fov/2:
             continue
         else:
-            frame_fov[fov_start:fov_end] = 1
+            frame_fov[int(fov_start+cam_fov/2):int(fov_end+cam_fov/2)] = 1
+            
+            print("yolo")
     
 
     for col in range(width):
         new_idx = int(cam_fov * col / width)
         #print(mask.shape, new_idx)
+        print(frame_fov[new_idx])
         if not frame_fov[new_idx]:
             output_image[:, col] = [0, 0, 0]    
         
@@ -285,8 +280,3 @@ def mask_with_lidar(img, cam_fov,circles):
    
 
 
-img = cv2.imread("/Users/emirysaglam/GitHub/IP2023/njord/DUBALAR.png")
-circles = [[0.15,0]]
-
-cv2.imshow("test",lidar2cam2(img,60,circles))
-cv2.waitKey(0)
