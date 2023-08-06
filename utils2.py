@@ -280,3 +280,58 @@ def mask_with_lidar(img, cam_fov,circles):
    
 
 
+def euler_from_quaternion(x, y, z, w):
+        """
+        Convert a quaternion into euler angles (roll, pitch, yaw)
+        roll is rotation around x in radians (counterclockwise)
+        pitch is rotation around y in radians (counterclockwise)
+        yaw is rotation around z in radians (counterclockwise)
+        """
+        t0 = +2.0 * (w * x + y * z)
+        t1 = +1.0 - 2.0 * (x * x + y * y)
+        roll_x = math.atan2(t0, t1)
+     
+        t2 = +2.0 * (w * y - z * x)
+        t2 = +1.0 if t2 > +1.0 else t2
+        t2 = -1.0 if t2 < -1.0 else t2
+        pitch_y = math.asin(t2)
+     
+        t3 = +2.0 * (w * z + x * y)
+        t4 = +1.0 - 2.0 * (y * y + z * z)
+        yaw_z = math.atan2(t3, t4)
+     
+        return roll_x, pitch_y, yaw_z # in radians
+
+def mask_with_imu(img,cam_fov,data):
+    roll,pitch,yaw = data
+    yaw = math.degrees(yaw)
+    frame_fov = np.zeros(cam_fov)
+    heigth = img.shape[0]
+    output_image = np.copy(img)
+
+    if yaw < 0:
+        print(int(cam_fov-yaw))
+        frame_fov[0:int(cam_fov+yaw)] = 1
+    elif yaw > 0 :
+        frame_fov[int(yaw):cam_fov] = 1
+
+    print("yolo")
+
+
+    for row in range(heigth):
+        new_idx = int(cam_fov * row / heigth)
+        #print(mask.shape, new_idx)
+        print(frame_fov[new_idx])
+        if not frame_fov[new_idx]:
+            output_image[row, :] = [0, 0, 0]    
+        
+            
+    return output_image
+
+
+data = 0,0,-0.0698131701
+img = cv2.imread("/Users/emirysaglam/GitHub/IP2023/njord/DUBALAR.png")
+out = mask_with_imu(img,50,data)
+
+cv2.imshow("test",out)
+cv2.waitKey(0)
