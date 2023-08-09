@@ -329,9 +329,15 @@ def mask_with_imu(img,cam_fov,data):
     return output_image
 
 
-data = 0,0,-0.0698131701
-img = cv2.imread("/Users/emirysaglam/GitHub/IP2023/njord/DUBALAR.png")
-out = mask_with_imu(img,50,data)
+def bbox2fov(img,bbox,fov):
+    w = img.shape[1]
+    x1,y1,x2,y2 = bbox
+    start_fov = x1*fov/w
+    end_fov = x2*fov/w
 
-cv2.imshow("test",out)
-cv2.waitKey(0)
+    start_fov = start_fov - (fov/2)
+    end_fov = end_fov - (fov/2)
+
+    return [start_fov,end_fov]
+
+
