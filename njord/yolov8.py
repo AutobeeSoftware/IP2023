@@ -19,7 +19,7 @@ img = cv2.imread(source)
 
 
 # Run inference on the source
-results = model(source, device=0,augment=True)  # generator of Results objects
+results = model(source, device=0)  # generator of Results objects
 r = results[0]
 
 index = 0
