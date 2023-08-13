@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from scipy import ndimage
 import math
+import time
+from ultralytics import YOLO
 
 
 def masking(hsv, lower_hsv, upper_hsv, opening_kernel = 2, medianF_tresh = 2, horizon_tresh = 0):
@@ -341,3 +343,38 @@ def bbox2fov(img,bbox,fov):
     return [start_fov,end_fov]
 
 
+
+def detect(model_path,img,fov_x):
+    # Load a pretrained YOLOv8n model
+    model = YOLO(model_path)
+    names = model.names
+    # Define path to video file
+    
+
+
+
+    # Run inference on the source
+    results = model(img, device=0)  # generator of Results objects
+    r = results[0]
+    tstmp = time.time()
+    
+    
+    out = []
+    index = 0
+    for i in r.boxes.cls:
+        cls = names[int(i)]
+        bbox = r.boxes.xyxy[index]
+        index += 1
+        fov = bbox2fov(img,bbox,fov_x)
+
+        obj = {"time_stamp":tstmp,
+               "class":cls,
+               "fov_center":(fov[0] + fov[1])/2,
+               "fov_start" : fov[0],
+               "fov_end" :fov[1]
+               }
+        out.append(obj)
+        print("obj")
+        #print(check_cardinal(img,bbox,cls))
+    
+    return out

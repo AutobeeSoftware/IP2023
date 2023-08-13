@@ -4,10 +4,17 @@ import numpy as np
 from ultralytics import YOLO
 import sys
 import os
+import time
 
 sys.path.append(os.path.abspath('../IP_general'))
 
 import utils2
+
+### fps icin ###
+prev_image_time = 0
+new_image_time = 0
+a = 0
+################
 
 
 ##################
@@ -22,24 +29,33 @@ print(fov_x)
 print(fov_y)
 ##############
 
-# Load a pretrained YOLOv8n model
-model = YOLO('/content/drive/MyDrive/njord/yolo/yolov8n-v1-320-e100/train/weights/best.pt')
-names = model.names
-# Define path to video file
-source = '/content/drive/MyDrive/njord/data/prop/16.jpeg'
-img = cv2.imread(source)
+
+model_path = ""
+#img_soure = ""
+
+camera = utils2.CSI_Camera()
+camera.open(utils2.gstreamer_pipeline(0))
+camera.start()
+
+while True:
+    _ , frame = camera.read()
+
+    if _ == False:
+        break
+
+    objects = utils2.detect(model_path,frame,fov_x)
+    print(objects)
 
 
+    ### fps icin ##
+    new_image_time = time.time()
+    fps = 1 / (new_image_time - prev_image_time)
+    prev_image_time = new_image_time
+    print(f"*******  FPS : {fps}  ********")
+    ##########
 
-# Run inference on the source
-results = model(source, device=0)  # generator of Results objects
-r = results[0]
 
-index = 0
-for i in r.boxes.cls:
-    cls = names[int(i)]
-    bbox = r.boxes.xyxy[index]
-    index += 1
-    fov = utils2.bbox2fov(img,bbox,fov_x)
-    print("------")
-    #print(check_cardinal(img,bbox,cls))
+camera.stop()
+camera.release()
+
+    
